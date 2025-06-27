@@ -1,3 +1,13 @@
+//to check if user is authenticated
+
+// We generate a token after registration to instantly log the user in so they 
+// don’t have to register then login separately.
+
+
+//You also generate the token after login, 
+//to authenticate the user and allow them access to protected routes.
+
+
 import jwt from "jsonwebtoken";
 import { User } from "../models/userModel.js";
 

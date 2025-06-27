@@ -26,7 +26,8 @@ const Navbar = ({ user }) => {
               to="/account"
               className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-xl text-gray-700"
             >
-              {user.name.slice(0, 1)}
+              {user && user.name ? user.name.slice(0, 2): "NA"}
+
             </Link>
           </div>
         </div>

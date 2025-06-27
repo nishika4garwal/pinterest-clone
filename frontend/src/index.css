@@ -1,11 +1,48 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 .common-input {
-  @apply mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none sm:text-sm;
+  @apply 
+    mt-1
+    block
+    w-full
+    px-3
+    py-2
+    border
+    border-gray-300
+    rounded-md
+    shadow-sm
+    focus:outline-none
+    sm:text-sm;
 }
 
 .common-btn {
-  @apply w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500;
+  @apply 
+    w-full
+    py-2
+    px-4
+    bg-red-600
+    hover:bg-red-700
+    text-white
+    font-semibold
+    rounded-md
+    shadow-sm
+    focus:outline-none
+    focus:ring-2
+    focus:ring-offset-2
+  focus:ring-red-500;
+}
+.my-masonry-grid {
+  display: -webkit-box; 
+  display: -ms-flexbox;
+  display: flex;
+  margin-left: -16px;
+  width: auto;
+}
+.my-masonry-grid_column {
+  padding-left: 16px;
+  background-clip: padding-box;
+}
+
+.my-masonry-grid_column > div {
+  margin-bottom: 16px;
 }

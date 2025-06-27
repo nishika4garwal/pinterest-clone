@@ -11,3 +11,5 @@ export const Loading = () => {
     </div>
   );
 };
+
+//this shows that circle indicating loading/waiting

@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { UserData } from "../context/UserContext";
+import Masonry from "react-masonry-css";
 
 const Account = ({ user }) => {
   const navigate = useNavigate();
@@ -19,6 +20,12 @@ const Account = ({ user }) => {
     } catch (error) {
       toast.error(error.response.data.message);
     }
+  };
+  const breakpoints = {
+    default: 4,
+    1100: 3,
+    700: 2,
+    500: 1,
   };
 
   const { pins } = PinData();
@@ -45,18 +52,24 @@ const Account = ({ user }) => {
           <div className="flex justify-center mt-4 space-x-2">
             <button
               onClick={logoutHandler}
-              className="bg-gray-200 px-4 py-2 rounded"
+              className="bg-gray-200 px-4 py-2 rounded cursor-pointer"
             >
               Logout
             </button>
           </div>
-
-          <div className="mt-4 flex flex-wrap justify-center gap-4">
+        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+          <div className="px-4 py-6 sm:px-0"></div>
+          <Masonry
+            breakpointCols={breakpoints}
+            className="my-masonry-grid"
+            columnClassName="my-masonry-grid_column"
+          >
             {userPins && userPins.length > 0 ? (
               userPins.map((e) => <PinCard key={e._id} pin={e} />)
             ) : (
-              <p>No Pin Yet</p>
+              <p>Nothing to show...yet! Pins you create will live here.</p>
             )}
+          </Masonry> 
           </div>
         </div>
       </div>

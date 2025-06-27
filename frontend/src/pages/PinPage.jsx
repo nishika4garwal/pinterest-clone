@@ -4,6 +4,7 @@ import { PinData } from "../context/PinContext";
 import { Loading } from "../components/Loading";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
+import { IoMdSend } from "react-icons/io";
 
 const PinPage = ({ user }) => {
   const params = useParams();
@@ -40,14 +41,14 @@ const PinPage = ({ user }) => {
   };
 
   const deleteCommentHander = (id) => {
-    if (confirm("Are you sure you want to delete this comment"))
+    if (confirm("are you sure you want to delete this comment"))
       deleteComment(pin._id, id);
   };
 
   const navigate = useNavigate();
 
   const deletePinHandler = () => {
-    if (confirm("Are you sure you want to delete this pin"))
+    if (confirm("are you sure you want to delete this pin"))
       deletePin(pin._id, navigate);
   };
 
@@ -88,7 +89,7 @@ const PinPage = ({ user }) => {
                   )}
 
                   {pin.owner && pin.owner._id === user._id && (
-                    <button onClick={editHandler}>
+                    <button onClick={editHandler} className="cursor-pointer">
                       <FaEdit />
                     </button>
                   )}
@@ -96,7 +97,7 @@ const PinPage = ({ user }) => {
                   {pin.owner && pin.owner._id === user._id && (
                     <button
                       onClick={deletePinHandler}
-                      className="bg-red-500 text-white py-1 px-3 rounded"
+                      className="bg-red-500 text-white py-1 px-3 rounded cursor-pointer"
                     >
                       <MdDelete />
                     </button>
@@ -118,7 +119,7 @@ const PinPage = ({ user }) => {
                 {edit && (
                   <button
                     style={{ width: "200px" }}
-                    className="bg-red-500 text-white py-1 px-3 mt-2 mb-2"
+                    className="bg-red-500 text-white py-1 px-3 mt-2 mb-2 cursor-pointer"
                     onClick={updateHandler}
                   >
                     Update
@@ -166,9 +167,9 @@ const PinPage = ({ user }) => {
 
                     <button
                       type="submit"
-                      className="ml-2 bg-red-500 px-4 py-2 rounded-md text-white"
+                      className="ml-2 bg-red-500 px-4 py-2 rounded-md text-white cursor-pointer"
                     >
-                      Add+
+                    <IoMdSend />
                     </button>
                   </form>
                 </div>
@@ -200,7 +201,7 @@ const PinPage = ({ user }) => {
                           {e.user === user._id && (
                             <button
                               onClick={() => deleteCommentHander(e._id)}
-                              className="bg-red-500 text-white py-1 px-3 rounded"
+                              className="bg-red-500 text-white py-1 px-3 rounded cursor-pointer"
                             >
                               <MdDelete />
                             </button>

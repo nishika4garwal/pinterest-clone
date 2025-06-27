@@ -7,10 +7,19 @@ export const createPin = TryCatch(async (req, res) => {
   const { title, pin } = req.body;
 
   const file = req.file;
+  //this file is coming from multer middleware
   const fileUrl = getDataUrl(file);
+  //this will convert the file to a base64 Data URI format
+  //which is perfect for uploading to cloudinary
 
   const cloud = await cloudinary.v2.uploader.upload(fileUrl.content);
-
+ //this will upload the file to cloudinary and return the cloud object
+  //the cloud object contains the public_id and secure_url of the uploaded file
+  if (!cloud)
+    return res.status(500).json({
+      message: "couldn't upload image",
+    });
+    
   await Pin.create({
     title,
     pin,
@@ -22,7 +31,7 @@ export const createPin = TryCatch(async (req, res) => {
   });
 
   res.json({
-    message: "Pin Created",
+    message: "your pin in created",
   });
 });
 
@@ -34,16 +43,20 @@ export const getAllPins = TryCatch(async (req, res) => {
 
 export const getSinglePin = TryCatch(async (req, res) => {
   const pin = await Pin.findById(req.params.id).populate("owner", "-password");
-
+//populate will replace the owner field with the user document
+//params.id is the id of the pin we want to get
+//eg http://localhost:5000/api/pins/685a38869ea9f39758fd74ac is for amalgamation
+//and shows owner details too
   res.json(pin);
 });
 
 export const commentOnPin = TryCatch(async (req, res) => {
   const pin = await Pin.findById(req.params.id);
-
+//you will comment on a pin by its id
+//eg {{base_url}}/api/pin/comment/685a38869ea9f39758fd74ac is used to comment on amalgamation pin
   if (!pin)
     return res.status(400).json({
-      message: "No Pin with this id",
+      message: "no such pin exists",
     });
 
   pin.comments.push({
@@ -55,30 +68,31 @@ export const commentOnPin = TryCatch(async (req, res) => {
   await pin.save();
 
   res.json({
-    message: "Comment Added",
+    message: "your comment is added",
   });
 });
 
 export const deleteComment = TryCatch(async (req, res) => {
   const pin = await Pin.findById(req.params.id);
-
+//you will delete a comment on a pin by comment's id
+//eg {{base_url}}/api/pin/comment/685a38869ea9f39758fd74ac?commentId=685a3ba047c841badd5a70e3 is used to delete comment on amalgamation pin
   if (!pin)
     return res.status(400).json({
-      message: "No Pin with this id",
+      message: "no such pin exists",
     });
 
   if (!req.query.commentId)
     return res.status(404).json({
-      message: "Please give comment id",
+      message: "please give comment id",
     });
 
   const commentIndex = pin.comments.findIndex(
     (item) => item._id.toString() === req.query.commentId.toString()
   );
-
+//findIndex will return the index of the comment in the comments array
   if (commentIndex === -1) {
     return res.status(404).json({
-      message: "Comment not found",
+      message: "comment not found",
     });
   }
 
@@ -86,15 +100,19 @@ export const deleteComment = TryCatch(async (req, res) => {
 
   if (comment.user.toString() === req.user._id.toString()) {
     pin.comments.splice(commentIndex, 1);
+//splice will remove the comment from the comments array
+    //it takes two arguments, the index of the item to remove and the number of items
+    //to remove, in this case we are removing one item
+
 
     await pin.save();
 
     return res.json({
-      message: "Comment Deleted",
+      message: "your comment is deleted",
     });
   } else {
     return res.status(403).json({
-      message: "You are not owner of this comment",
+      message: "you are not owner of this comment",
     });
   }
 });
@@ -104,20 +122,25 @@ export const deletePin = TryCatch(async (req, res) => {
 
   if (!pin)
     return res.status(400).json({
-      message: "No Pin with this id",
+      message: "no such pin exists",
     });
 
   if (pin.owner.toString() !== req.user._id.toString())
     return res.status(403).json({
-      message: "Unauthorized",
+      message: "unauthorized",
     });
 
   await cloudinary.v2.uploader.destroy(pin.image.id);
+  //this will delete the image from cloudinary using the public_id of the image
+//the public_id is stored in the image field of the pin document
+//eg, for amalgamation pin, tlnx3e2znbesycoskjtt is the public_id of the image
 
+//then finally we delete the pin document from the database
+//with pin id only
   await pin.deleteOne();
 
   res.json({
-    message: "Pin Deleted",
+    message: "your pin is deleted",
   });
 });
 
@@ -126,12 +149,12 @@ export const updatePin = TryCatch(async (req, res) => {
 
   if (!pin)
     return res.status(400).json({
-      message: "No Pin with this id",
+      message: "no such pin exists",
     });
 
   if (pin.owner.toString() !== req.user._id.toString())
     return res.status(403).json({
-      message: "Unauthorized",
+      message: "unauthorized",
     });
 
   pin.title = req.body.title;
@@ -140,6 +163,6 @@ export const updatePin = TryCatch(async (req, res) => {
   await pin.save();
 
   res.json({
-    message: "Pin updated",
+    message: "your pin is updated",
   });
 });

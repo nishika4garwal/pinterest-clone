@@ -107,7 +107,7 @@ const Create = () => {
                   required
                 />
               </div>
-              <button className="common-btn">Add+</button>
+              <button className="common-btn">publish</button>
             </form>
           </div>
         </div>

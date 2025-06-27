@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { PinData } from "../context/PinContext";
 import PinCard from "../components/PinCard";
 import { UserData } from "../context/UserContext";
+import Masonry from "react-masonry-css";
 
 const UserProfile = ({ user: loggedInUser }) => {
   const params = useParams();
@@ -34,6 +35,13 @@ const UserProfile = ({ user: loggedInUser }) => {
   }, [user]);
 
   const { pins } = PinData();
+
+  const breakpoints = {
+    default: 4,
+    1100: 3,
+    700: 2,
+    500: 1,
+  };
 
   let userPins;
 
@@ -71,18 +79,25 @@ const UserProfile = ({ user: loggedInUser }) => {
               <div className="flex justify-center mt-4 space-x-2">
                 <button
                   onClick={followHander}
-                  className="bg-gray-200 px-4 py-2 rounded"
+                  className="bg-gray-200 px-4 py-2 rounded cursor-pointer"
                 >
                   {isFollow ? "Unfollow" : " Follow"}
                 </button>
               </div>
             )}
-            <div className="mt-4 flex flex-wrap justify-center gap-4">
+            <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+          <div className="px-4 py-6 sm:px-0"></div>
+            <Masonry
+              breakpointCols={breakpoints}
+              className="my-masonry-grid"
+              columnClassName="my-masonry-grid_column"
+            >
               {userPins && userPins.length > 0 ? (
                 userPins.map((e) => <PinCard key={e._id} pin={e} />)
               ) : (
-                <p>No Pin Yet</p>
+                <p>no pins yet</p>
               )}
+            </Masonry>
             </div>
           </div>
         </div>

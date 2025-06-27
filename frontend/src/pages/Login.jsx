@@ -1,17 +1,26 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { UserData } from "../context/UserContext";
+import { UserData } from "../context/UserContext"; //A custom context that holds user login logic and state (like loading).
 import { LoadingAnimation } from "../components/Loading";
-import { PinData } from "../context/PinContext";
+import { PinData } from "../context/PinContext";//A custom context that holds pin-related logic and state (like fetching pins).
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  //These manage the input fields for the email and password. As the user types, these values are updated.
+ //The useState hook is used to create state variables in functional components.
+  //The email and password variables hold the current values of the input fields, and setEmail
 
   const { loginUser, btnLoading } = UserData();
   const navigate = useNavigate();
 
   const { fetchPins } = PinData();
+  //loginUser: a function that handles actual login logic (probably sends a POST request to your backend).
+//btnLoading: a boolean that shows a loading state on the login button.
+//fetchPins: gets user's content (like Pinterest posts) after login.
+//navigate: allows redirecting the user to another page (like homepage) after logging in.
+
+
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -33,15 +42,15 @@ const Login = () => {
         <form onSubmit={submitHandler}>
           <div className="mb-4">
             <label
-              htmlFor="email"
+              htmlFor="email" 
               className="block text-sm font-medium text-gray-700"
             >
-              Email
+              email
             </label>
             <input
               type="email"
               id="email"
-              className="common-input"
+              className="common-input"//this is a custom class for styling inputs in index.css
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -52,7 +61,7 @@ const Login = () => {
               htmlFor="password"
               className="block text-sm font-medium text-gray-700"
             >
-              Password
+              password
             </label>
             <input
               type="password"
@@ -81,7 +90,7 @@ const Login = () => {
 
           <div className="mt-4 text-center text-sm">
             <span>
-              Not on Pinterest yet?
+              Not on pinterest yet? 
               <Link
                 to="/register"
                 className="font-medium text-pinterest hover:underline"
