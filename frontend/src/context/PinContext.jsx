@@ -83,6 +83,17 @@ export const PinProvider = ({ children }) => {
     }
   }
 
+  async function savePin(pinId, fetchUser) {
+  try {
+    const { data } = await axios.post(`/api/pin/save/${pinId}`);
+    toast.success(data.message);
+    if (fetchUser) fetchUser();
+  } catch (error) {
+    toast.error(error?.response?.data?.message || "Failed to save pin");
+  }
+}
+
+
   async function addPin(
     formData,
     setFilePrev,
@@ -122,6 +133,7 @@ export const PinProvider = ({ children }) => {
         deletePin,
         addPin,
         fetchPins,
+        savePin,
       }}
     >
       {children}

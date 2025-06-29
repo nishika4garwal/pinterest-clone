@@ -70,16 +70,19 @@ export const UserProvider = ({ children }) => { //This wraps your entire app and
 //Checks if user session exists (/api/user/me)
 //Sets the user and isAuth accordingly
 
-  async function followUser(id, fetchUser) {
-    try {
-      const { data } = await axios.post("/api/user/follow/" + id);
+  async function followUser(id, fetchUserCallback) {
+  try {
+    const { data } = await axios.post("/api/user/follow/" + id);
+    toast.success(data.message);
 
-      toast.success(data.message);
-      fetchUser();
-    } catch (error) {
-      toast.error(error.response.data.message);
-    }
+    const updated = await axios.get("/api/user/me");
+    setUser(updated.data);
+    if (fetchUserCallback) fetchUserCallback(); // optional
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Failed to follow/unfollow");
   }
+}
+
 
   useEffect(() => {
     fetchUser();

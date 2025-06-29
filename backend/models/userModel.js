@@ -27,6 +27,12 @@ const schema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    savedPins: [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Pin",
+    },
+    ],
   },
   {
     timestamps: true,

@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { UserData } from "../context/UserContext"; //A custom context that holds user login logic and state (like loading).
 import { LoadingAnimation } from "../components/Loading";
 import { PinData } from "../context/PinContext";//A custom context that holds pin-related logic and state (like fetching pins).
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -10,6 +12,7 @@ const Login = () => {
   //These manage the input fields for the email and password. As the user types, these values are updated.
  //The useState hook is used to create state variables in functional components.
   //The email and password variables hold the current values of the input fields, and setEmail
+  const [showPassword, setShowPassword] = useState(false);
 
   const { loginUser, btnLoading } = UserData();
   const navigate = useNavigate();
@@ -27,8 +30,15 @@ const Login = () => {
     loginUser(email, password, navigate, fetchPins);
   };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <div
+      className="relative min-h-screen flex items-center justify-center bg-cover bg-center"
+      style={{ backgroundImage: "url('/bg.png')" }} // replace with your screenshot file
+    >
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black opacity-60 z-0" />
+
+      {/* Login Box */}
+      <div className="relative z-10 bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <div className="flex justify-center mb-4">
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Pinterest-logo.png/600px-Pinterest-logo.png"
@@ -63,14 +73,22 @@ const Login = () => {
             >
               password
             </label>
+            <div className="relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
-              className="common-input"
+              className="common-input pr-10"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-3 text-gray-500 cursor-pointer"
+            >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+            </div>
           </div>
 
           <button type="submit" className="common-btn" disabled={btnLoading}>
@@ -90,7 +108,7 @@ const Login = () => {
 
           <div className="mt-4 text-center text-sm">
             <span>
-              Not on pinterest yet? 
+              Not on pinterest yet? {" "}
               <Link
                 to="/register"
                 className="font-medium text-pinterest hover:underline"

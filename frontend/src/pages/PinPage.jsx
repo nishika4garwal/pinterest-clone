@@ -151,7 +151,7 @@ const PinPage = ({ user }) => {
                 <div className="flex items-center mt-4">
                   <div className="rounded-full h-12 w-12 bg-gray-300 flex items-center justify-center mr-4">
                     <span className="font-bold">
-                      {pin.owner && pin.owner.name.slice(0, 1)}
+                       {user.name.slice(0, 1)}
                     </span>
                   </div>
 

@@ -39,7 +39,7 @@ export const loginUser = TryCatch(async (req, res) => {
 
   if (!user)
     return res.status(400).json({
-      message: "no such user exists",
+      message: "no such account exists",
     });
 
   const comparePassword = await bcrypt.compare(password, user.password);
@@ -59,9 +59,20 @@ export const loginUser = TryCatch(async (req, res) => {
 
 //thunderbolt - http://localhost:5000/api/user/me
 export const myProfile = TryCatch(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  const user = await User.findById(req.user._id)
+    .select("-password")
+    .populate("followers", "name _id")
+    .populate("following", "name _id")
+    .populate({
+      path: "savedPins",
+      populate: {
+        path: "owner",         
+        select: "name _id",  
+      },
+    });
   res.json(user);
 });
+
 
 
 
@@ -69,10 +80,14 @@ export const myProfile = TryCatch(async (req, res) => {
 //for eg nishikaagarwal0402 has id 685991fd74098d0b675efcde
 //in thunderbolt - http://localhost:5000/api/user/685991fd74098d0b675efcde
 export const userProfile = TryCatch(async (req, res) => {
-  const user = await User.findById(req.params.id).select("-password");
+  const user = await User.findById(req.params.id)
+    .select("-password")
+    .populate("followers", "name _id")
+    .populate("following", "name _id");
 
   res.json(user);
 });
+
 
 export const followAndUnfollowUser = TryCatch(async (req, res) => {
   const user = await User.findById(req.params.id); //user whose profile we want to follow or unfollow
@@ -114,10 +129,55 @@ export const followAndUnfollowUser = TryCatch(async (req, res) => {
   }
 });
 
+export const removeFollower = TryCatch(async (req, res) => {
+  const targetUser = await User.findById(req.params.id); // the user you want to remove from your followers
+  const currentUser = await User.findById(req.user._id); // you
+
+  if (!targetUser)
+    return res.status(404).json({ message: "User not found" });
+
+  // Remove target user from your followers
+  const indexInMyFollowers = currentUser.followers.indexOf(targetUser._id);
+  if (indexInMyFollowers !== -1) {
+    currentUser.followers.splice(indexInMyFollowers, 1);
+  }
+
+  // Remove yourself from their following
+  const indexInTheirFollowing = targetUser.following.indexOf(currentUser._id);
+  if (indexInTheirFollowing !== -1) {
+    targetUser.following.splice(indexInTheirFollowing, 1);
+  }
+
+  await currentUser.save();
+  await targetUser.save();
+
+  res.json({
+    message: `Removed ${targetUser.name} from your followers`,
+  });
+});
+
+
 export const logOutUser = TryCatch(async (req, res) => {
   res.cookie("token", "", { maxAge: 0 });
 
   res.json({
-    message: "logged out successfully",
+    message: "you have logged out successfully",
   });
 });
+
+// POST /api/pin/save/:pinId
+export const savePin = async (req, res) => {
+  const userId = req.user._id;
+  const pinId = req.params.pinId;
+
+  const user = await User.findById(userId);
+
+  if (!user.savedPins.includes(pinId)) {
+    user.savedPins.push(pinId);
+    await user.save();
+    res.status(200).json({ message: "pin saved" });
+  } else {
+    res.status(400).json({ message: "pin already saved" });
+  }
+};
+

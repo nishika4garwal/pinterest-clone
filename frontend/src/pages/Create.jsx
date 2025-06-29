@@ -64,7 +64,7 @@ const Create = () => {
               <p className="text-gray-500">Choose a file</p>
             </div>
             <p className="mt-4 text-sm text-gray-400">
-              we recomment using high quality .jpg files but less than 10mb
+              we recommend using high quality .jpg files but less than 10mb
             </p>
           </div>
         </div>

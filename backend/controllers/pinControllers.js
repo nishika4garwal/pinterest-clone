@@ -2,6 +2,7 @@ import { Pin } from "../models/pinModel.js";
 import TryCatch from "../utils/TryCatch.js";
 import getDataUrl from "../utils/urlGenerator.js";
 import cloudinary from "cloudinary";
+import { User } from "../models/userModel.js";
 
 export const createPin = TryCatch(async (req, res) => {
   const { title, pin } = req.body;
@@ -166,3 +167,21 @@ export const updatePin = TryCatch(async (req, res) => {
     message: "your pin is updated",
   });
 });
+
+export const savePin = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    const pinId = req.params.id;
+    if (!user.savedPins.includes(pinId)) {
+      user.savedPins.push(pinId);
+      await user.save();
+      return res.status(200).json({ message: "Pin saved successfully" });
+    } else {
+      return res.status(400).json({ message: "Pin already saved" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+

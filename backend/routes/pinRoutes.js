@@ -9,6 +9,7 @@ import {
   getAllPins,
   getSinglePin,
   updatePin,
+  savePin
 } from "../controllers/pinControllers.js";
 
 const router = express.Router();
@@ -23,5 +24,6 @@ router.put("/:id", isAuth, updatePin);// Update a pin by ID
 router.delete("/:id", isAuth, deletePin);// Delete a pin by ID
 router.post("/comment/:id", isAuth, commentOnPin);// Comment on a pin by ID
 router.delete("/comment/:id", isAuth, deleteComment);// Delete a comment on a pin by comment's ID
+router.post("/save/:id", isAuth, savePin);
 
 export default router;
